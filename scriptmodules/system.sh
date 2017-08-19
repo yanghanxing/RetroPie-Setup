@@ -268,7 +268,7 @@ function platform_rpi1() {
     __default_cflags="-O2 -mfpu=vfp -march=armv6j -mfloat-abi=hard"
     __default_asflags=""
     __default_makeflags=""
-    __platform_flags="arm armv6 rpi"
+    __platform_flags="arm armv6 rpi gles"
     # if building in a chroot, what cpu should be set by qemu
     # make chroot identify as arm6l
     __qemu_cpu=arm1176
@@ -278,7 +278,7 @@ function platform_rpi2() {
     __default_cflags="-O2 -mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -ftree-vectorize -funsafe-math-optimizations"
     __default_asflags=""
     __default_makeflags="-j2"
-    __platform_flags="arm armv7 neon rpi"
+    __platform_flags="arm armv7 neon rpi gles"
     __qemu_cpu=cortex-a7
 }
 
@@ -288,24 +288,24 @@ function platform_rpi3() {
     __default_cflags="-O2 -march=armv8-a+crc -mtune=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard -ftree-vectorize -funsafe-math-optimizations"
     __default_asflags=""
     __default_makeflags="-j2"
-    __platform_flags="arm armv8 neon rpi"
+    __platform_flags="arm armv8 neon rpi gles"
 }
 
 function platform_odroid-c1() {
     __default_cflags="-O2 -mcpu=cortex-a5 -mfpu=neon-vfpv4 -mfloat-abi=hard -ftree-vectorize -funsafe-math-optimizations"
     __default_asflags=""
     __default_makeflags="-j2"
-    __platform_flags="arm armv7 neon mali"
+    __platform_flags="arm armv7 neon mali gles"
     __qemu_cpu=cortex-a9
 }
 
 function platform_odroid-c2() {
     if [[ "$(getconf LONG_BIT)" -eq 32 ]]; then
         __default_cflags="-O2 -march=armv8-a+crc -mtune=cortex-a53 -mfpu=neon-fp-armv8"
-        __platform_flags="arm armv8 neon mali"
+        __platform_flags="arm armv8 neon mali gles"
     else
         __default_cflags="-O2 -march=native"
-        __platform_flags="aarch64 mali"
+        __platform_flags="aarch64 mali gles"
     fi
     __default_cflags+=" -ftree-vectorize -funsafe-math-optimizations"
     __default_asflags=""
@@ -318,33 +318,46 @@ function platform_odroid-xu() {
     __default_cflags+=" -DGL_GLEXT_PROTOTYPES"
     __default_asflags=""
     __default_makeflags="-j2"
-    __platform_flags="arm armv7 neon mali"
+    __platform_flags="arm armv7 neon mali gles"
 }
 
 function platform_x86() {
     __default_cflags="-O2 -march=native"
     __default_asflags=""
     __default_makeflags="-j$(nproc)"
-    __platform_flags="x11"
+    __platform_flags="x11 gl"
 }
 
 function platform_generic-x11() {
     __default_cflags="-O2"
     __default_asflags=""
     __default_makeflags="-j$(nproc)"
-    __platform_flags="x11"
+    __platform_flags="x11 gl"
 }
 
 function platform_armv7-mali() {
     __default_cflags="-O2 -march=armv7-a -mfpu=neon-vfpv4 -mfloat-abi=hard -ftree-vectorize -funsafe-math-optimizations"
     __default_asflags=""
     __default_makeflags="-j$(nproc)"
-    __platform_flags="arm armv7 neon mali"
+    __platform_flags="arm armv7 neon mali gles"
 }
 
 function platform_imx6() {
     __default_cflags="-O2 -march=armv7-a -mfpu=neon -mtune=cortex-a9 -mfloat-abi=hard -ftree-vectorize -funsafe-math-optimizations"
     __default_asflags=""
     __default_makeflags="-j2"
-    __platform_flags="arm armv7 neon"
+    __platform_flags="arm armv7 neon gles"
+}
+
+function platform_rock64() {
+    if [[ "$(getconf LONG_BIT)" -eq 32 ]]; then
+        __default_cflags="-O2 -march=armv8-a+crc -mtune=cortex-a53 -mfpu=neon-fp-armv8"
+        __platform_flags="arm armv8 neon gles kmsdrm"
+    else
+        __default_cflags="-O2 -march=native"
+        __platform_flags="aarch64 gles kmsdrm"
+    fi
+    __default_cflags+=" -ftree-vectorize -funsafe-math-optimizations"
+    __default_asflags=""
+    __default_makeflags="-j$(nproc)"
 }
