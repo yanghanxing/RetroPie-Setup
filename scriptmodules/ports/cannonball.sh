@@ -32,6 +32,8 @@ function build_cannonball() {
         target="sdl2gles_rpi"
     elif isPlatform "mali"; then
         target="sdl2gles"
+    elif isPlatform "gles"; then
+        target="sdl2gles"
     else
         target="sdl2gl"
     fi
