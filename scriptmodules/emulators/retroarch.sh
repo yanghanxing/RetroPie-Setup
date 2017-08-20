@@ -39,10 +39,14 @@ function sources_retroarch() {
 }
 
 function build_retroarch() {
-    local params=(--enable-sdl2)
-    ! isPlatform "x11" && params+=(--disable-x11 --enable-opengles --disable-ffmpeg --disable-sdl --enable-sdl2 --disable-oss --disable-pulse --disable-al --disable-jack)
+    local params=(--disable-sdl --enable-sdl2 --disable-oss --disable-al --disable-jack)
+    isPlatform "gl" && params+=(--enable-opengl)
+    isPlatform "gles" && params+=(--disable-opengl --enable-opengles)
+    ! isPlatform "x11" && params+=(--disable-x11 --disable-ffmpeg --disable-pulse)
     isPlatform "rpi" && params+=(--enable-dispmanx)
     isPlatform "mali" && params+=(--enable-mali_fbdev)
+    isPlatform "kmsdrm" && params+=(--enable-kms --enable-plain_drm)
+
     if isPlatform "arm"; then
         params+=(--enable-floathard)
         isPlatform "neon" && params+=(--enable-neon)

@@ -145,7 +145,7 @@ function build_emulationstation() {
     rpSwap on 1000
     cmake . -DFREETYPE_INCLUDE_DIRS=/usr/include/freetype2/
     make clean
-    make
+    make -j1
     rpSwap off
     md_ret_require="$md_build/emulationstation"
 }

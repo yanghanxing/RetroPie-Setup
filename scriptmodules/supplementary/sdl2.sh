@@ -16,7 +16,7 @@ rp_module_section=""
 rp_module_flags=""
 
 function get_ver_sdl2() {
-    echo "2.0.5"
+    echo "2.0.6"
 }
 
 function get_pkg_ver_sdl2() {
@@ -33,10 +33,13 @@ function get_arch_sdl2() {
 function depends_sdl2() {
     # Dependencies from the debian package control + additional dependencies for the pi (some are excluded like dpkg-dev as they are
     # already covered by the build-essential package retropie relies on.
-    local depends=(devscripts debhelper dh-autoreconf libasound2-dev libudev-dev libibus-1.0-dev libdbus-1-dev libx11-dev libxcursor-dev libxext-dev libxi-dev libxinerama-dev libxrandr-dev libxss-dev libxt-dev libxxf86vm-dev libgl1-mesa-dev)
+    local depends=(devscripts debhelper dh-autoreconf libasound2-dev libudev-dev libibus-1.0-dev libdbus-1-dev)
     isPlatform "rpi" && depends+=(libraspberrypi-dev)
     isPlatform "mali" && depends+=(mali-fbdev)
-    isPlatform "x11" && depends+=(libpulse-dev)
+    isPlatform "gl" && depends+=(libgl1-mesa-dev)
+    isPlatform "gles" && depends+=(libgles2-mesa-dev)
+    isPlatform "kmsdrm" && depends+=(libegl1-mesa-dev libdrm-dev libgbm-dev)
+    isPlatform "x11" && depends+=(libpulse-dev libx11-dev libxcursor-dev libxext-dev libxi-dev libxinerama-dev libxrandr-dev libxss-dev libxt-dev libxxf86vm-dev)
     getDepends "${depends[@]}"
 }
 
@@ -45,10 +48,12 @@ function sources_sdl2() {
     local pkg_ver="$(get_pkg_ver_sdl2)"
 
     local branch="release-$ver"
+    local repository="https://github.com/RetroPie/SDL-mirror.git"
     isPlatform "rpi" && branch="retropie-$ver"
     isPlatform "mali" && branch="mali-$ver"
+    isPlatform "kmsdrm" && repository="https://github.com/rtissera/SDL" && branch="kmsdrm_mali"
 
-    gitPullOrClone "$md_build/$pkg_ver" https://github.com/RetroPie/SDL-mirror.git "$branch"
+    gitPullOrClone "$md_build/$pkg_ver" "$repository" "$branch"
     cd "$pkg_ver"
     DEBEMAIL="Jools Wills <buzz@exotica.org.uk>" dch -v "$pkg_ver" "SDL $ver configured for the $__platform"
 }
