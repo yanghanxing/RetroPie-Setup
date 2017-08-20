@@ -359,5 +359,5 @@ function platform_rock64() {
     fi
     __default_cflags+=" -ftree-vectorize -funsafe-math-optimizations"
     __default_asflags=""
-    __default_makeflags="-j$(nproc)"
+    __default_makeflags="-j2"
 }
