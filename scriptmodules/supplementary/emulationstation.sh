@@ -139,6 +139,7 @@ function sources_emulationstation() {
     [[ -z "$repo" ]] && repo="https://github.com/RetroPie/EmulationStation"
     [[ -z "$branch" ]] && branch="master"
     gitPullOrClone "$md_build" "$repo" "$branch"
+    applyPatch "$md_data/01_es_core_sound.diff"
 }
 
 function build_emulationstation() {

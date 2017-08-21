@@ -1,0 +1,44 @@
+diff --git es-core/src/Sound.cpp es-core/src/Sound.cpp
+index c915ea5..392788a 100644
+--- es-core/src/Sound.cpp
++++ es-core/src/Sound.cpp
+@@ -50,6 +50,9 @@ void Sound::loadFile(const std::string & path)
+ 
+ void Sound::init()
+ {
++	if (!SDL_WasInit(SDL_INIT_AUDIO))
++		SDL_InitSubSystem(SDL_INIT_AUDIO);
++
+ 	if(mSampleData != NULL)
+ 		deinit();
+ 
+@@ -66,7 +69,10 @@ void Sound::init()
+ 	}
+ 	//build conversion buffer
+ 	SDL_AudioCVT cvt;
+-    SDL_BuildAudioCVT(&cvt, wave.format, wave.channels, wave.freq, AUDIO_S16, 2, 44100);
++    if (SDL_BuildAudioCVT(&cvt, wave.format, wave.channels, wave.freq, AUDIO_S16, 2, 44100) < 0) {
++		LOG(LogError) << "Error creating SDL audio converter !\n" << "    " << SDL_GetError();
++	}
++	else {
+ 	//copy data to conversion buffer
+ 	cvt.len = dlen;
+     cvt.buf = new Uint8[cvt.len * cvt.len_mult];
+@@ -87,6 +93,7 @@ void Sound::init()
+ 		mSampleFormat.format = AUDIO_S16;
+ 		SDL_UnlockAudio();
+ 	}
++    }
+ 	//free wav data now
+     SDL_FreeWAV(data);
+ }
+@@ -104,6 +111,9 @@ void Sound::deinit()
+ 		mSamplePos = 0;
+ 		SDL_UnlockAudio();
+ 	}
++
++	if (SDL_WasInit(SDL_INIT_AUDIO))
++		SDL_QuitSubSystem(SDL_INIT_AUDIO);
+ }
+ 
+ void Sound::play()
