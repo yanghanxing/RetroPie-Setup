@@ -1,7 +1,7 @@
-diff --git es-core/src/Sound.cpp es-core/src/Sound.cpp
+diff --git a/es-core/src/Sound.cpp b/es-core/src/Sound.cpp
 index c915ea5..392788a 100644
---- es-core/src/Sound.cpp
-+++ es-core/src/Sound.cpp
+--- a/es-core/src/Sound.cpp
++++ b/es-core/src/Sound.cpp
 @@ -50,6 +50,9 @@ void Sound::loadFile(const std::string & path)
  
  void Sound::init()
