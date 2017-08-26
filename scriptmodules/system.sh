@@ -255,6 +255,9 @@ function get_platform() {
         esac
     fi
 
+    # Horrible hack here
+    __platform="rock64"
+
     if ! fnExists "platform_${__platform}"; then
         fatalError "Unknown platform - please manually set the __platform variable to one of the following: $(compgen -A function platform_ | cut -b10- | paste -s -d' ')"
     fi
@@ -360,12 +363,4 @@ function platform_rock64() {
     __default_cflags+=" -ftree-vectorize -funsafe-math-optimizations"
     __default_asflags=""
     __default_makeflags="-j2"
-}
-
-function platform_x86-kmsdrm() {
-    __default_cflags="-O2 -march=native"
-    __platform_flags="x86 gles kmsdrm"
-    __default_cflags+=" -ftree-vectorize -funsafe-math-optimizations"
-    __default_asflags=""
-    __default_makeflags="-j8"
 }
