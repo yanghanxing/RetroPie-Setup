@@ -355,10 +355,10 @@ function platform_imx6() {
 function platform_rock64() {
     if [[ "$(getconf LONG_BIT)" -eq 32 ]]; then
         __default_cflags="-O2 -march=armv8-a+crc -mtune=cortex-a53 -mfpu=neon-fp-armv8"
-        __platform_flags="arm armv8 neon gles kmsdrm"
+        __platform_flags="arm armv8 neon gles kmsdrm rockchip"
     else
         __default_cflags="-O2 -march=native"
-        __platform_flags="aarch64 gles kmsdrm"
+        __platform_flags="aarch64 gles kmsdrm rockchip"
     fi
     __default_cflags+=" -ftree-vectorize -funsafe-math-optimizations"
     __default_asflags=""

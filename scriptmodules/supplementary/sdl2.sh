@@ -36,9 +36,11 @@ function depends_sdl2() {
     local depends=(devscripts debhelper dh-autoreconf libasound2-dev libudev-dev libibus-1.0-dev libdbus-1-dev)
     isPlatform "rpi" && depends+=(libraspberrypi-dev)
     isPlatform "mali" && depends+=(mali-fbdev)
-    isPlatform "gl" && depends+=(libgl1-mesa-dev)
-    isPlatform "gles" && depends+=(libgles2-mesa-dev)
-    isPlatform "kmsdrm" && depends+=(libegl1-mesa-dev libdrm-dev libgbm-dev)
+    isPlatform "gl" && ! isPlatform "rockchip" && depends+=(libgl1-mesa-dev)
+    isPlatform "gles" && ! isPlatform "rockchip" && depends+=(libgles2-mesa-dev)
+    isPlatform "kmsdrm" && depends+=(libdrm-dev)
+    isPlatform "kmsdrm" && ! isPlatform "rockchip" && depends+=(libegl1-mesa-dev libgbm-dev)
+    isPlatform "kmsdrm" && isPlatform "rockchip" && depends+=(libmali-rk-dev)
     isPlatform "x11" && depends+=(libpulse-dev libx11-dev libxcursor-dev libxext-dev libxi-dev libxinerama-dev libxrandr-dev libxss-dev libxt-dev libxxf86vm-dev)
     getDepends "${depends[@]}"
 }

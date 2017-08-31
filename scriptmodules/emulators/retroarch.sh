@@ -45,7 +45,7 @@ function build_retroarch() {
     ! isPlatform "x11" && params+=(--disable-x11 --disable-ffmpeg --disable-pulse)
     isPlatform "rpi" && params+=(--enable-dispmanx)
     isPlatform "mali" && params+=(--enable-mali_fbdev)
-    isPlatform "kmsdrm" && params+=(--enable-kms --enable-plain_drm)
+    isPlatform "kmsdrm" && params+=(--enable-kms --enable-plain_drm --disable-wayland)
 
     if isPlatform "arm"; then
         params+=(--enable-floathard)
