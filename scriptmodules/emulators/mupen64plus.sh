@@ -64,15 +64,17 @@ function build_mupen64plus() {
     local params=()
     for dir in *; do
         if [[ -f "$dir/projects/unix/Makefile" ]]; then
-            make -C "$dir/projects/unix" clean
             params=()
             isPlatform "rpi1" && params+=("VFP=1" "VFP_HARD=1" "HOST_CPU=armv6")
             isPlatform "rpi" && params+=("VC=1")
+            isPlatform "gles" && ! isPlatform "rpi" && params+=("USE_GLES=1")
+	    isPlatform "armhf" && params+=("VFP=1" "VFP_HARD=1" "HOST_CPU=armhf")
             isPlatform "neon" && params+=("NEON=1")
             isPlatform "x11" && params+=("OSD=1" "PIE=1")
             isPlatform "x86" && params+=("SSE=SSSE3")
             [[ "$dir" == "mupen64plus-ui-console" ]] && params+=("COREDIR=$md_inst/lib/" "PLUGINDIR=$md_inst/lib/mupen64plus/")
             # MAKEFLAGS replace removes any distcc from path, as it segfaults with cross compiler and lto
+            make -C "$dir/projects/unix" clean "${params[@]}"
             MAKEFLAGS="${MAKEFLAGS/\/usr\/lib\/distcc:/}" make -C "$dir/projects/unix" all "${params[@]}" OPTFLAGS="$CFLAGS -O3 -flto"
         fi
     done
@@ -82,7 +84,9 @@ function build_mupen64plus() {
     pushd "$md_build/GLideN64/projects/cmake"
     params=("-DMUPENPLUSAPI=On" "-DUSE_SYSTEM_LIBS=On" "-DVEC4_OPT=On")
     isPlatform "neon" && params+=("-DNEON_OPT=On")
-    if isPlatform "rpi3"; then 
+    isPlatform "gles" && params+=("-DGLES2=On")
+    isPlatform "kmsdrm" && params+=("-DEGL=On")
+    if isPlatform "armv8"; then 
         params+=("-DCRC_ARMV8=On")
     else
         params+=("-DCRC_OPT=On")
@@ -126,6 +130,8 @@ function install_mupen64plus() {
             local params=()
             isPlatform "armv6" && params+=("VFP=1" "HOST_CPU=armv6")
             isPlatform "rpi" && params+=("VC=1")
+            isPlatform "gles" && ! isPlatform "rpi" && params+=("USE_GLES=1")
+            isPlatform "armhf" && params+=("VFP=1" "VFP_HARD=1" "HOST_CPU=armhf")
             isPlatform "neon" && params+=("NEON=1")
             isPlatform "x86" && params+=("SSE=SSSE3")
             make -C "$source/projects/unix" PREFIX="$md_inst" OPTFLAGS="$CFLAGS -O3 -flto" "${params[@]}" install
